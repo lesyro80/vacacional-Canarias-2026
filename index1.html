@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Maestro VV Canarias 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Lexend:wght@400;700;800&display=swap');
+        
+        :root {
+            --canarias-blue: #0081C9;
+            --canarias-yellow: #FFCE00;
+            --espana-red: #AD1519;
+            --espana-yellow: #FABD00;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f8fafc;
+            color: #0f172a;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        h1, h2, h3, .font-lexend { font-family: 'Lexend', sans-serif; }
+
+        /* Sidebar Transiciones */
+        .sidebar-item {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .sidebar-item.active {
+            background-color: #eff6ff;
+            color: var(--canarias-blue);
+            border-left: 4px solid var(--canarias-blue);
+        }
+
+        @media (min-width: 768px) {
+            .sidebar-item.active {
+                border-left: none;
+                border-right: 4px solid var(--canarias-blue);
+            }
+        }
+
+        .section-content { display: none; }
+        .section-content.active { display: block; animation: fadeIn 0.4s ease-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scrollbar Personalizada */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        /* Estilos de inputs táctiles */
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 5px;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: var(--canarias-blue);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row min-h-screen overflow-x-hidden">
+
+    <!-- Header Móvil -->
+    <header class="md:hidden bg-white border-b border-slate-200 sticky top-0 z-[100] px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded bg-blue-600 flex flex-col overflow-hidden">
+                <div class="h-1/3 bg-white"></div>
+                <div class="h-1/3 bg-blue-600"></div>
+                <div class="h-1/3 bg-yellow-400"></div>
+            </div>
+            <span class="font-black text-lg tracking-tighter">VV CANARIAS</span>
+        </div>
+        <button onclick="toggleMobileMenu()" class="p-2 text-slate-600 focus:outline-none" aria-label="Abrir Menú">
+            <i class="fa-solid fa-bars-staggered text-2xl"></i>
+        </button>
+    </header>
+
+    <!-- Overlay Móvil -->
+    <div id="mobile-overlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-slate-900/50 z-[110] hidden backdrop-blur-sm transition-opacity"></div>
+
+    <!-- Menú Lateral / Mobile Drawer -->
+    <aside id="sidebar" class="fixed md:sticky top-0 left-0 h-screen w-72 bg-white border-r border-slate-200 z-[120] transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto">
+        <div class="p-6">
+            <div class="hidden md:flex items-center gap-3 mb-10">
+                <div class="w-10 h-10 rounded-lg flex flex-col overflow-hidden shadow-sm">
+                    <div class="h-1/3 bg-white"></div>
+                    <div class="h-1/3" style="background-color: var(--canarias-blue);"></div>
+                    <div class="h-1/3" style="background-color: var(--canarias-yellow);"></div>
+                </div>
+                <span class="text-xl font-black tracking-tight">VV CANARIAS</span>
+            </div>
+            
+            <nav class="space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 ml-2">Menú Principal</p>
+                <button onclick="switchTab('inicio')" id="nav-inicio" class="sidebar-item active w-full flex items-center gap-3 px-4 py-3.5 text-sm font-semibold rounded-xl text-left">
+                    <i class="fa-solid fa-house w-5"></i> Inicio
+                </button>
+                <button onclick="switchTab('guia360')" id="nav-guia360" class="sidebar-item w-full flex items-center gap-3 px-4 py-3.5 text-sm font-semibold rounded-xl text-slate-600 hover:bg-slate-50 text-left">
+                    <i class="fa-solid fa-arrows-to-eye w-5"></i> Guía 360°
+                </button>
+                <button onclick="switchTab('legal')" id="nav-legal" class="sidebar-item w-full flex items-center gap-3 px-4 py-3.5 text-sm font-semibold rounded-xl text-slate-600 hover:bg-slate-50 text-left">
+                    <i class="fa-solid fa-scale-balanced w-5"></i> Legal 2026
+                </button>
+                <button onclick="switchTab('fiscal')" id="nav-fiscal" class="sidebar-item w-full flex items-center gap-3 px-4 py-3.5 text-sm font-semibold rounded-xl text-slate-600 hover:bg-slate-50 text-left">
+                    <i class="fa-solid fa-hand-holding-dollar w-5"></i> Fiscalidad & IGIC
+                </button>
+                <button onclick="switchTab('amortizacion')" id="nav-amortizacion" class="sidebar-item w-full flex items-center gap-3 px-4 py-3.5 text-sm font-semibold rounded-xl text-slate-600 hover:bg-slate-50 text-left">
+                    <i class="fa-solid fa-calculator w-5"></i> Amortización
+                </button>
+                
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-8 mb-4 ml-2">Herramientas</p>
+                <button onclick="switchTab('calc-amort')" id="nav-calc-amort" class="sidebar-item w-full flex items-center gap-3 px-4 py-3.5 text-sm font-semibold rounded-xl text-slate-600 hover:bg-slate-50 text-left">
+                    <i class="fa-solid fa-coins w-5"></i> Calculador Amort.
+                </button>
+                <button onclick="switchTab('roi')" id="nav-roi" class="sidebar-item w-full flex items-center gap-3 px-4 py-3.5 text-sm font-semibold rounded-xl text-slate-600 hover:bg-slate-50 text-left">
+                    <i class="fa-solid fa-chart-pie w-5"></i> Calculadora ROI
+                </button>
+                <button onclick="switchTab('academia')" id="nav-academia" class="sidebar-item w-full flex items-center gap-3 px-4 py-3.5 text-sm font-semibold rounded-xl text-slate-600 hover:bg-slate-50 text-left">
+                    <i class="fa-solid fa-video w-5"></i> Academia
+                </button>
+            </nav>
+            
+            <div class="mt-12 p-4 bg-blue-50 rounded-2xl">
+                <p class="text-xs font-bold text-blue-700 mb-1">¿Necesitas ayuda?</p>
+                <p class="text-[10px] text-blue-600 leading-tight">Accede a soporte contable especializado para VV.</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 w-full bg-slate-50">
+        
+        <!-- SECCIÓN INICIO -->
+        <section id="tab-inicio" class="section-content active p-6 md:p-12">
+            <div class="max-w-4xl mx-auto text-center py-12 md:py-20">
+                <span class="inline-block px-4 py-1.5 bg-blue-100 text-blue-700 text-xs font-bold rounded-full mb-6">EDICIÓN CANARIAS 2026</span>
+                <h1 class="text-4xl md:text-6xl font-black text-slate-900 mb-6 leading-[1.1]">Portal de Gestión <br><span class="text-blue-600 italic">Vivienda Vacacional</span></h1>
+                <p class="text-base md:text-lg text-slate-500 mb-10 max-w-xl mx-auto">La plataforma integral para propietarios. Toda la operativa legal, fiscal y estratégica adaptada al móvil.</p>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
+                        <div class="text-2xl md:text-3xl font-black text-blue-600">7%</div>
+                        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">IGIC</div>
+                    </div>
+                    <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
+                        <div class="text-2xl md:text-3xl font-black text-blue-600">3%</div>
+                        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Amort. Anual</div>
+                    </div>
+                    <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
+                        <div class="text-2xl md:text-3xl font-black text-blue-600">24h</div>
+                        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Policial</div>
+                    </div>
+                    <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
+                        <div class="text-2xl md:text-3xl font-black text-blue-600">30k</div>
+                        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Límite REPE</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: GUÍA 360° -->
+        <section id="tab-guia360" class="section-content p-6 md:p-12">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-black text-slate-900 mb-8">Guía Operativa 360°</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+                    <div class="p-6 md:p-8 bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-5">
+                            <i class="fa-solid fa-key"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2">Check-in Inteligente</h3>
+                        <p class="text-xs md:text-sm text-slate-500 leading-relaxed">Sincroniza cerraduras digitales para reducir costes y dar libertad 24/7 al huésped.</p>
+                    </div>
+                    <div class="p-6 md:p-8 bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mb-5">
+                            <i class="fa-solid fa-leaf"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2">Sostenibilidad Eco</h3>
+                        <p class="text-xs md:text-sm text-slate-500 leading-relaxed">El turista 2026 prefiere alojamientos con placas solares y cargadores VE.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: LEGAL -->
+        <section id="tab-legal" class="section-content p-6 md:p-12">
+            <div class="max-w-5xl mx-auto">
+                <div class="bg-red-600 text-white p-6 rounded-3xl mb-8 flex flex-col md:flex-row items-center gap-4 text-center md:text-left">
+                    <i class="fa-solid fa-triangle-exclamation text-3xl"></i>
+                    <div>
+                        <h3 class="font-black text-xl leading-none mb-1">NUEVO DECRETO 2026</h3>
+                        <p class="text-xs text-red-100">Consulta las nuevas restricciones por zona tensionada en tu ayuntamiento.</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="p-6 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                            <h3 class="font-bold">Agencia Tributaria Canaria</h3>
+                            <span class="text-[9px] font-black bg-blue-100 text-blue-700 px-2 py-0.5 rounded">ATC</span>
+                        </div>
+                        <div class="p-6 grid gap-4">
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                <h4 class="text-sm font-bold text-blue-700 mb-1">Modelo 420 (IGIC)</h4>
+                                <p class="text-xs text-slate-500">Obligatorio cada 3 meses para liquidar el 7%.</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                <h4 class="text-sm font-bold text-blue-700 mb-1">Modelo 425 (Resumen)</h4>
+                                <p class="text-xs text-slate-500">Informativa anual que se presenta en enero.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: CALCULADOR AMORTIZACIÓN -->
+        <section id="tab-calc-amort" class="section-content p-6 md:p-12">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl font-black text-slate-900 mb-8">Calculador Amortización IRPF</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm">
+                            <div class="grid grid-cols-1 gap-6">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-3">Coste de Compra + Gastos (€)</label>
+                                    <input type="number" id="am-coste" value="250000" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-lg font-bold outline-none focus:ring-4 focus:ring-blue-100" oninput="calcAmort()">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-3">% Valor Construcción (según Catastro)</label>
+                                    <div class="flex items-center gap-4">
+                                        <input type="range" id="am-porcentaje" min="1" max="100" value="80" class="flex-1" oninput="calcAmort()">
+                                        <span class="font-bold text-blue-600 w-12" id="am-pct-val">80%</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-3">Días Explotación Anual</label>
+                                    <input type="range" id="am-dias" min="1" max="365" value="210" class="w-full" oninput="calcAmort()">
+                                    <div class="text-center font-bold text-blue-600 mt-2 text-sm" id="am-dias-val">210 Días</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-blue-600 rounded-[2rem] p-8 text-white flex flex-col items-center justify-center text-center shadow-xl shadow-blue-200">
+                        <p class="text-[10px] font-black text-blue-200 uppercase tracking-widest mb-2">Ahorro Fiscal Estimado</p>
+                        <div class="text-4xl md:text-5xl font-black mb-4" id="am-resultado">0,00€</div>
+                        <p class="text-[10px] text-blue-100 leading-relaxed max-w-[200px]">Este gasto reduce tu base imponible en el IRPF anual.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: ROI -->
+        <section id="tab-roi" class="section-content p-6 md:p-12">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl font-black mb-8">Calculadora ROI 2.0</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-200">
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Inversión Total (€)</label>
+                                <input type="number" id="roi-inversion" value="280000" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none" oninput="runROI()">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Ingresos Anuales</label>
+                                    <input type="number" id="roi-ingresos" value="35000" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none" oninput="runROI()">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Gastos (€)</label>
+                                    <input type="number" id="roi-gastos" value="9500" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none" oninput="runROI()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 rounded-3xl p-8 text-white flex flex-col justify-between">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 text-center md:text-left">CASH FLOW NETO</p>
+                            <h4 class="text-4xl md:text-5xl font-black text-emerald-400 text-center md:text-left" id="roi-cashflow">25.500€</h4>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 mt-8">
+                            <div class="p-4 bg-slate-800 rounded-2xl text-center">
+                                <p class="text-[9px] font-bold text-slate-500 uppercase mb-1">ROI</p>
+                                <h5 class="text-lg font-bold text-yellow-400" id="roi-porcentaje">9.1%</h5>
+                            </div>
+                            <div class="p-4 bg-slate-800 rounded-2xl text-center">
+                                <p class="text-[9px] font-bold text-slate-500 uppercase mb-1">Payback</p>
+                                <h5 class="text-lg font-bold" id="roi-años">11.0 Años</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: ACADEMIA -->
+        <section id="tab-academia" class="section-content p-6 md:p-12">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl font-black text-slate-900 mb-8">Academia de Video</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Video 1 -->
+                    <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 group">
+                        <div class="aspect-video relative overflow-hidden bg-slate-900">
+                             <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover opacity-60">
+                             <div class="absolute inset-0 flex items-center justify-center">
+                                 <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-xl">
+                                     <i class="fa-solid fa-play text-blue-600 text-lg ml-1"></i>
+                                 </div>
+                             </div>
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-sm leading-tight">Liquidar IGIC Trimestral (420)</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">12 min • Tutorial Paso a Paso</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+            const isOpen = sidebar.classList.contains('translate-x-0');
+            
+            if (isOpen) {
+                sidebar.classList.remove('translate-x-0');
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            } else {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('translate-x-0');
+                overlay.classList.remove('hidden');
+            }
+        }
+
+        function switchTab(id) {
+            // Cerrar menú móvil al cambiar de pestaña
+            if (window.innerWidth < 768) toggleMobileMenu();
+
+            document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            
+            const targetSection = document.getElementById('tab-' + id);
+            if (targetSection) targetSection.classList.add('active');
+            
+            const navBtn = document.getElementById('nav-' + id);
+            if (navBtn) navBtn.classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function runROI() {
+            const inversion = parseFloat(document.getElementById('roi-inversion').value) || 0;
+            const ingresos = parseFloat(document.getElementById('roi-ingresos').value) || 0;
+            const gastos = parseFloat(document.getElementById('roi-gastos').value) || 0;
+            const cashflow = ingresos - gastos;
+            const roi = inversion > 0 ? (cashflow / inversion) * 100 : 0;
+            const años = cashflow > 0 ? (inversion / cashflow) : 0;
+            
+            document.getElementById('roi-cashflow').innerText = Math.round(cashflow).toLocaleString('es-ES') + '€';
+            document.getElementById('roi-porcentaje').innerText = roi.toFixed(1) + '%';
+            document.getElementById('roi-años').innerText = años.toFixed(1) + ' Años';
+        }
+
+        function calcAmort() {
+            const coste = parseFloat(document.getElementById('am-coste').value) || 0;
+            const pctVal = parseInt(document.getElementById('am-porcentaje').value) || 0;
+            const dias = parseInt(document.getElementById('am-dias').value) || 0;
+            
+            document.getElementById('am-pct-val').innerText = pctVal + "%";
+            document.getElementById('am-dias-val').innerText = dias + " Días";
+            
+            const baseAmortizable = coste * (pctVal / 100);
+            const resultado = (baseAmortizable * 0.03 / 365) * dias;
+            
+            document.getElementById('am-resultado').innerText = resultado.toLocaleString('es-ES', { 
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2 
+            }) + "€";
+        }
+
+        window.onload = () => { 
+            runROI(); 
+            calcAmort();
+        };
+    </script>
+</body>
+</html>
