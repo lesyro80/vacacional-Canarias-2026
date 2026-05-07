@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Maestro VV Canarias 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Lexend:wght@400;700;800&display=swap');
+        
+        :root {
+            --canarias-blue: #0081C9;
+            --canarias-yellow: #FFCE00;
+            --espana-red: #AD1519;
+            --espana-yellow: #FABD00;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+
+        h1, h2, h3, .font-lexend { font-family: 'Lexend', sans-serif; }
+
+        .sidebar-item {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .sidebar-item.active {
+            background-color: #eff6ff;
+            color: var(--canarias-blue);
+            border-right: 4px solid var(--canarias-blue);
+        }
+
+        .section-content { display: none; }
+        .section-content.active { display: block; animation: fadeIn 0.3s ease-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .video-card:hover .play-overlay { opacity: 1; }
+        
+        .accent-yellow {
+            background-color: var(--canarias-yellow);
+            color: #000;
+        }
+
+        .legal-card { border-top: 5px solid var(--espana-red); }
+        .canarias-card { border-top: 5px solid var(--canarias-blue); }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row min-h-screen">
+
+    <!-- Sidebar -->
+    <aside class="w-full md:w-72 bg-white border-r border-slate-200 z-50 sticky top-0 h-screen overflow-y-auto hidden md:block">
+        <div class="p-8">
+            <div class="flex items-center gap-2 mb-8">
+                <div class="w-10 h-10 rounded-lg flex flex-col overflow-hidden shadow-sm">
+                    <div class="h-1/3 bg-white"></div>
+                    <div class="h-1/3" style="background-color: var(--canarias-blue);"></div>
+                    <div class="h-1/3" style="background-color: var(--canarias-yellow);"></div>
+                </div>
+                <span class="text-xl font-extrabold tracking-tight">VV CANARIAS</span>
+            </div>
+            
+            <nav class="space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 ml-2">Operaciones</p>
+                <button onclick="switchTab('inicio')" id="nav-inicio" class="sidebar-item active w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-lg text-left">
+                    <i class="fa-solid fa-house"></i> Inicio
+                </button>
+                <button onclick="switchTab('guia360')" id="nav-guia360" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 text-left">
+                    <i class="fa-solid fa-arrows-to-eye"></i> Guía 360°
+                </button>
+                <button onclick="switchTab('legal')" id="nav-legal" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 text-left">
+                    <i class="fa-solid fa-scale-balanced"></i> Legal & Modelos Pro
+                </button>
+                <button onclick="switchTab('fiscal')" id="nav-fiscal" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 text-left">
+                    <i class="fa-solid fa-hand-holding-dollar"></i> Fiscalidad & IGIC
+                </button>
+                <button onclick="switchTab('amortizacion')" id="nav-amortizacion" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 text-left">
+                    <i class="fa-solid fa-calculator"></i> Amortización Fiscal
+                </button>
+                <button onclick="switchTab('calc-amort')" id="nav-calc-amort" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 text-left">
+                    <i class="fa-solid fa-coins"></i> Calculador Amort.
+                </button>
+                <button onclick="switchTab('academia')" id="nav-academia" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 text-left">
+                    <i class="fa-solid fa-video"></i> Academia de Video
+                </button>
+                
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-8 mb-4 ml-2">Crecimiento</p>
+                <button onclick="switchTab('roi')" id="nav-roi" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 text-left">
+                    <i class="fa-solid fa-chart-pie"></i> Calculadora ROI 2.0
+                </button>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto bg-slate-50">
+        
+        <!-- SECCIÓN INICIO -->
+        <section id="tab-inicio" class="section-content active p-6 lg:p-12">
+            <div class="max-w-5xl mx-auto text-center py-20">
+                <h1 class="text-6xl font-black text-slate-900 mb-6 text-balance">Portal de Gestión <br><span class="text-blue-600">Vivienda Vacacional</span></h1>
+                <p class="text-xl text-slate-500 mb-12 max-w-2xl mx-auto">Toda la operativa legal, fiscal y estratégica para propietarios en Canarias actualizada a 2026.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-100">
+                        <div class="text-3xl font-bold text-blue-600">7%</div>
+                        <div class="text-xs font-bold text-slate-400 uppercase">IGIC General</div>
+                    </div>
+                    <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-100">
+                        <div class="text-3xl font-bold text-blue-600">3%</div>
+                        <div class="text-xs font-bold text-slate-400 uppercase">Amortización Anual</div>
+                    </div>
+                    <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-100">
+                        <div class="text-3xl font-bold text-blue-600">24h</div>
+                        <div class="text-xs font-bold text-slate-400 uppercase">Reporte Policial</div>
+                    </div>
+                    <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-100">
+                        <div class="text-3xl font-bold text-blue-600">30k</div>
+                        <div class="text-xs font-bold text-slate-400 uppercase">Límite REPE</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: GUÍA 360° -->
+        <section id="tab-guia360" class="section-content p-6 lg:p-12">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-4xl font-black text-slate-900 mb-8">Guía 360°: Visión Integral VV</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-8 bg-white rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-6">
+                            <i class="fa-solid fa-key text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Check-in Automatizado</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">Implementa cerraduras inteligentes sincronizadas con tu calendario para reducir costes operativos y mejorar la experiencia del huésped 24/7.</p>
+                    </div>
+                    <div class="p-8 bg-white rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mb-6">
+                            <i class="fa-solid fa-leaf text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Sostenibilidad (Eco-VV)</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">El turista 2026 valora la eficiencia energética. Instalar placas solares no solo reduce facturas, sino que aumenta tu deducción fiscal por mejora del inmueble.</p>
+                    </div>
+                    <div class="p-8 bg-white rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center mb-6">
+                            <i class="fa-solid fa-bullhorn text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Marketing Multicanal</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">No dependas solo de Airbnb. Diversifica en Booking, VRBO y tu propio motor de reservas para optimizar el margen de beneficio y el control de datos.</p>
+                    </div>
+                    <div class="p-8 bg-white rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mb-6">
+                            <i class="fa-solid fa-people-group text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Comunidad y Vecindad</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">La armonía con los vecinos es clave. Instala sensores de ruido y establece canales de comunicación claros para evitar conflictos y proteger tu licencia.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: LEGAL & MODELOS PRO (ACTUALIZADA CON NUEVA LEY 2026) -->
+        <section id="tab-legal" class="section-content p-6 lg:p-12">
+            <div class="max-w-5xl mx-auto">
+                <div class="flex items-center gap-4 mb-4">
+                    <h2 class="text-4xl font-black text-slate-900">Legalidad & Modelos 2026</h2>
+                    <span class="bg-red-600 text-white text-[10px] font-bold px-3 py-1 rounded-full">NUEVA LEY</span>
+                </div>
+                <p class="text-slate-500 mb-8">Actualizado con la <strong>Ley 12/2023 por el Derecho a la Vivienda</strong> y el nuevo <strong>Decreto de Ordenación de la Vivienda Vacacional en Canarias</strong>.</p>
+
+                <div class="grid grid-cols-1 gap-8">
+                    <!-- AEAT Section -->
+                    <div class="bg-white rounded-3xl shadow-sm overflow-hidden legal-card border border-slate-200">
+                        <div class="p-8 border-b border-slate-100 bg-red-50/50 flex justify-between items-center">
+                            <h3 class="text-xl font-bold">1. Agencia Tributaria Estatal (AEAT)</h3>
+                            <span class="px-3 py-1 bg-red-100 text-red-700 text-[10px] font-black rounded-full">ESTATAL</span>
+                        </div>
+                        <div class="p-8 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                                <h4 class="font-bold text-sm mb-2 text-red-700">Modelo 036 / 037</h4>
+                                <p class="text-xs text-slate-500 leading-relaxed">Declaración censal de alta. Epígrafe 685 (Alojamientos Turísticos Extrahoteleros). Clave para operar legalmente como actividad económica.</p>
+                            </div>
+                            <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                                <h4 class="font-bold text-sm mb-2 text-red-700">Modelo 179</h4>
+                                <p class="text-xs text-slate-500 leading-relaxed">Declaración informativa trimestral que presentan las plataformas (Airbnb/Booking) sobre tus ingresos. La AEAT ya tiene tus datos antes de que declares.</p>
+                            </div>
+                            <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                                <h4 class="font-bold text-sm mb-2 text-red-700">Modelo 210 (IRNR)</h4>
+                                <p class="text-xs text-slate-500 leading-relaxed">Para propietarios <strong>no residentes</strong>. Liquidación de rentas obtenidas en España. Obligatorio aunque no haya beneficio.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ATC Section -->
+                    <div class="bg-white rounded-3xl shadow-sm overflow-hidden canarias-card border border-slate-200">
+                        <div class="p-8 border-b border-slate-100 bg-blue-50/50 flex justify-between items-center">
+                            <h3 class="text-xl font-bold">2. Agencia Tributaria Canaria (ATC)</h3>
+                            <span class="px-3 py-1 bg-blue-100 text-blue-700 text-[10px] font-black rounded-full">AUTONÓMICO</span>
+                        </div>
+                        <div class="p-8 grid md:grid-cols-2 gap-6">
+                            <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                                <h4 class="font-bold text-sm mb-2 text-blue-700">Modelo 420 (IGIC)</h4>
+                                <p class="text-xs text-slate-500 leading-relaxed">Autoliquidación trimestral del IGIC (7%). Debes declarar tanto el IGIC cobrado como el autorepercutido por servicios externos (Inversión Sujeto Pasivo).</p>
+                            </div>
+                            <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                                <h4 class="font-bold text-sm mb-2 text-blue-700">Modelo 425 (Resumen Anual)</h4>
+                                <p class="text-xs text-slate-500 leading-relaxed">Declaración informativa anual que resume todas las operaciones de IGIC del ejercicio anterior. Se presenta en enero.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Novedades Ley 2026 -->
+                    <div class="bg-amber-50 p-8 rounded-3xl border border-amber-100 shadow-inner">
+                        <h3 class="text-xl font-black text-amber-900 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Cambios Críticos 2026
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex gap-4">
+                                <div class="w-8 h-8 rounded-full bg-amber-200 flex-shrink-0 flex items-center justify-center text-amber-900 font-bold">1</div>
+                                <p class="text-sm text-amber-900"><strong>Zonas Tensionadas:</strong> La nueva Ley de Vivienda permite a los Ayuntamientos limitar nuevas licencias VV en barrios con alta presión residencial.</p>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="w-8 h-8 rounded-full bg-amber-200 flex-shrink-0 flex items-center justify-center text-amber-900 font-bold">2</div>
+                                <p class="text-sm text-amber-900"><strong>Eficiencia Energética:</strong> Obligatoriedad de certificado clase C o superior para renovar la declaración responsable (dependiendo del municipio).</p>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="w-8 h-8 rounded-full bg-amber-200 flex-shrink-0 flex items-center justify-center text-amber-900 font-bold">3</div>
+                                <p class="text-sm text-amber-900"><strong>SES.HOSPEDAJE:</strong> El registro nacional de viajeros unificado es ahora 100% obligatorio digitalmente, sustituyendo antiguos partes manuales.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: FISCALIDAD & IGIC (DETALLADA) -->
+        <section id="tab-fiscal" class="section-content p-6 lg:p-12">
+            <div class="max-w-5xl mx-auto">
+                <div class="flex items-center gap-4 mb-8">
+                    <i class="fa-solid fa-hand-holding-dollar text-4xl text-blue-600"></i>
+                    <h2 class="text-4xl font-black text-slate-900">Fiscalidad Estratégica & IGIC</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    <div class="bg-white p-8 rounded-3xl border-t-4 border-blue-500 shadow-sm">
+                        <h3 class="font-bold text-lg mb-4">IGIC (Impuesto Canario)</h3>
+                        <p class="text-sm text-slate-600 mb-4">Tipo general del <strong>7%</strong>. En VV no existe la exención por alquiler de vivienda de larga duración.</p>
+                        <div class="p-4 bg-blue-50 rounded-2xl text-xs text-blue-800">
+                            <strong>Tip:</strong> Si ofreces servicios de hostelería (limpieza durante estancia, desayunos), tributas al 7%. Si no, es "arrendamiento" (sujeto pero exento de IGIC en algunos casos, pero la AEAT lo obliga para VV).
+                        </div>
+                    </div>
+                    <div class="bg-white p-8 rounded-3xl border-t-4 border-amber-500 shadow-sm">
+                        <h3 class="font-bold text-lg mb-4">Inversión Sujeto Pasivo</h3>
+                        <p class="text-sm text-slate-600 mb-4">Las plataformas como Airbnb facturan desde Irlanda. Al ser profesional (VV), <strong>no te cobran IGIC/IVA</strong>.</p>
+                        <div class="p-4 bg-amber-50 rounded-2xl text-xs text-amber-800">
+                            Debes autorepercutirte el 7% en el Modelo 420. Si estás en REPE, esto es un gasto directo no recuperable.
+                        </div>
+                    </div>
+                    <div class="bg-white p-8 rounded-3xl border-t-4 border-red-500 shadow-sm">
+                        <h3 class="font-bold text-lg mb-4">No Residentes (IRNR)</h3>
+                        <p class="text-sm text-slate-600 mb-4">Si resides fuera de España pero tienes VV en Canarias, usas el <strong>Modelo 210</strong>.</p>
+                        <ul class="text-xs space-y-2 mt-2">
+                            <li><i class="fa-solid fa-circle text-[6px] mr-2"></i> UE/Islandia/Noruega: <strong>19%</strong></li>
+                            <li><i class="fa-solid fa-circle text-[6px] mr-2"></i> Resto del mundo (inc. UK): <strong>24%</strong></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-[2.5rem] p-10 text-white shadow-2xl">
+                    <h3 class="text-2xl font-bold mb-6">Calendario Fiscal Obligatorio</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="border-l-2 border-blue-500 pl-4 py-2">
+                            <div class="text-blue-400 font-bold">Trimestre 1</div>
+                            <div class="text-sm">Abril (1-20)</div>
+                            <div class="text-[10px] text-slate-500 uppercase mt-1">Modelo 420</div>
+                        </div>
+                        <div class="border-l-2 border-blue-500 pl-4 py-2">
+                            <div class="text-blue-400 font-bold">Trimestre 2</div>
+                            <div class="text-sm">Julio (1-20)</div>
+                            <div class="text-[10px] text-slate-500 uppercase mt-1">Modelo 420</div>
+                        </div>
+                        <div class="border-l-2 border-blue-500 pl-4 py-2">
+                            <div class="text-blue-400 font-bold">Trimestre 3</div>
+                            <div class="text-sm">Octubre (1-20)</div>
+                            <div class="text-[10px] text-slate-500 uppercase mt-1">Modelo 420</div>
+                        </div>
+                        <div class="border-l-2 border-blue-500 pl-4 py-2">
+                            <div class="text-blue-400 font-bold">Trimestre 4</div>
+                            <div class="text-sm">Enero (1-30)</div>
+                            <div class="text-[10px] text-slate-500 uppercase mt-1">Modelo 420 + 425</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: AMORTIZACIÓN FISCAL (MÁXIMO DETALLE) -->
+        <section id="tab-amortizacion" class="section-content p-6 lg:p-12">
+            <div class="max-w-5xl mx-auto">
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 class="text-4xl font-black text-slate-900">Amortización Fiscal</h2>
+                        <p class="text-slate-500 text-lg">El gasto deducible más potente que no requiere desembolso de caja.</p>
+                    </div>
+                    <div class="bg-blue-100 text-blue-700 px-6 py-3 rounded-2xl font-bold">3% Anual</div>
+                </div>
+
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm mb-12">
+                    <h3 class="text-xl font-bold mb-6">¿Cómo se calcula según la Ley de IRPF?</h3>
+                    <p class="text-sm text-slate-600 mb-8 leading-relaxed">
+                        La ley permite deducir como gasto el 3% del mayor de estos dos valores (excluyendo siempre el valor del suelo):
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100">
+                            <div class="font-black text-slate-800 mb-2">A. Coste de Adquisición</div>
+                            <p class="text-xs text-slate-500">Precio de compra + Gastos de Notaría + Registro + ITP (Impuestos). Se aplica el porcentaje de valor de construcción según catastro sobre este total.</p>
+                        </div>
+                        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100">
+                            <div class="font-black text-slate-800 mb-2">B. Valor Catastral</div>
+                            <p class="text-xs text-slate-500">Suele ser mucho menor que el de compra. Solo se usa si no se puede demostrar el coste de adquisición.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="bg-emerald-50 p-8 rounded-3xl border border-emerald-100">
+                        <h4 class="font-bold text-emerald-900 mb-4">Ejemplo Práctico Real</h4>
+                        <ul class="space-y-3 text-sm text-emerald-800">
+                            <li class="flex justify-between"><span>Compra + Gastos:</span> <strong>250.000€</strong></li>
+                            <li class="flex justify-between"><span>Valor Suelo (20% Catastro):</span> <strong>50.000€</strong></li>
+                            <li class="flex justify-between text-emerald-900 font-bold border-t border-emerald-200 pt-2"><span>Base Amortizable:</span> <span>200.000€</span></li>
+                            <li class="flex justify-between text-xl pt-4"><span>Deducción Anual (3%):</span> <strong class="text-emerald-600">6.000€</strong></li>
+                        </ul>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-white rounded-xl border border-slate-200">
+                            <h5 class="font-bold text-slate-800 text-sm">Amortización de Muebles</h5>
+                            <p class="text-xs text-slate-500">Mobiliario y enseres se amortizan al <strong>10%</strong> anual (vida útil 10 años).</p>
+                        </div>
+                        <div class="p-4 bg-white rounded-xl border border-slate-200">
+                            <h5 class="font-bold text-slate-800 text-sm">Amortización de Reformas</h5>
+                            <p class="text-xs text-slate-500">Grandes reformas (cocina, baño) se suman al valor de construcción y se amortizan al 3%.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: CALCULADOR AMORTIZACIÓN PRO -->
+        <section id="tab-calc-amort" class="section-content p-6 lg:p-12">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-4xl font-black text-slate-900 mb-8">Simulador de Amortización IRPF</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Coste de Adquisición Total (€)</label>
+                                    <input type="number" id="am-coste" value="250000" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500" oninput="calcAmort()">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">% Valor Construcción (Catastro)</label>
+                                    <input type="number" id="am-porcentaje" value="80" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500" oninput="calcAmort()">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Días Alquilados en el Año</label>
+                                    <input type="range" id="am-dias" min="1" max="365" value="210" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600" oninput="calcAmort()">
+                                    <div class="text-center font-bold text-blue-600 mt-2" id="am-dias-val">210 Días</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-blue-600 rounded-3xl p-8 text-white flex flex-col justify-center">
+                        <p class="text-[10px] font-bold text-blue-200 uppercase tracking-widest mb-2 text-center">Ahorro Fiscal Estimado</p>
+                        <div class="text-4xl font-black text-center mb-4" id="am-resultado">0,00€</div>
+                        <p class="text-xs text-blue-100 text-center leading-relaxed">Gasto deducible que reduce tu base imponible sin salir dinero de tu bolsillo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: ACADEMIA DE VIDEO -->
+        <section id="tab-academia" class="section-content p-6 lg:p-12">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                    <div>
+                        <h2 class="text-5xl font-black text-slate-900 mb-4 tracking-tight">Academia <span class="text-blue-600">Pro</span></h2>
+                        <p class="text-slate-500 text-lg">Domina la operativa de tu vivienda vacacional con formación visual.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="px-4 py-2 bg-white border border-slate-200 rounded-full text-xs font-bold text-slate-600">12 Lecciones</span>
+                        <span class="px-4 py-2 bg-white border border-slate-200 rounded-full text-xs font-bold text-slate-600">Actualizado 2026</span>
+                    </div>
+                </div>
+
+                <div class="mb-16">
+                    <div class="flex items-center gap-3 mb-8 border-b border-slate-200 pb-4">
+                        <i class="fa-solid fa-file-invoice-dollar text-blue-600 text-xl"></i>
+                        <h3 class="text-xl font-bold text-slate-800 uppercase tracking-widest text-sm">Módulo 1: Fiscalidad & IGIC</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div class="video-card bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden group cursor-pointer">
+                            <div class="aspect-video bg-slate-900 relative flex items-center justify-center overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500" alt="IGIC">
+                                <div class="play-overlay absolute inset-0 flex items-center justify-center bg-blue-600/20 opacity-0 transition-opacity">
+                                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-2xl">
+                                        <i class="fa-solid fa-play text-blue-600 text-2xl ml-1"></i>
+                                    </div>
+                                </div>
+                                <span class="absolute bottom-3 right-3 bg-black/70 text-white text-[10px] px-2 py-1 rounded font-bold">12:45</span>
+                            </div>
+                            <div class="p-6">
+                                <h4 class="font-bold text-slate-800 mb-2 leading-snug">Cómo liquidar el IGIC Trimestral (Mod. 420)</h4>
+                                <p class="text-xs text-slate-500">Paso a paso en la sede electrónica de la ATC para evitar recargos.</p>
+                            </div>
+                        </div>
+                        <div class="video-card bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden group cursor-pointer">
+                            <div class="aspect-video bg-slate-900 relative flex items-center justify-center overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1551288049-bbbda536ad89?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500" alt="ROI">
+                                <div class="play-overlay absolute inset-0 flex items-center justify-center bg-blue-600/20 opacity-0 transition-opacity">
+                                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-2xl">
+                                        <i class="fa-solid fa-play text-blue-600 text-2xl ml-1"></i>
+                                    </div>
+                                </div>
+                                <span class="absolute bottom-3 right-3 bg-black/70 text-white text-[10px] px-2 py-1 rounded font-bold">08:20</span>
+                            </div>
+                            <div class="p-6">
+                                <h4 class="font-bold text-slate-800 mb-2 leading-snug">Facturación de Airbnb y el VIES</h4>
+                                <p class="text-xs text-slate-500">Entiende la inversión del sujeto pasivo y ahorra el 21% de IVA.</p>
+                            </div>
+                        </div>
+                        <div class="video-card bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden group cursor-pointer">
+                            <div class="aspect-video bg-slate-900 relative flex items-center justify-center overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500" alt="Amortización">
+                                <div class="play-overlay absolute inset-0 flex items-center justify-center bg-blue-600/20 opacity-0 transition-opacity">
+                                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-2xl">
+                                        <i class="fa-solid fa-play text-blue-600 text-2xl ml-1"></i>
+                                    </div>
+                                </div>
+                                <span class="absolute bottom-3 right-3 bg-black/70 text-white text-[10px] px-2 py-1 rounded font-bold">15:10</span>
+                            </div>
+                            <div class="p-6">
+                                <h4 class="font-bold text-slate-800 mb-2 leading-snug">Maximizando la Amortización del 3%</h4>
+                                <p class="text-xs text-slate-500">Cálculo avanzado para reducir tu base imponible en el IRPF.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: ROI -->
+        <section id="tab-roi" class="section-content p-6 lg:p-12">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-4xl font-black mb-12">Calculadora ROI 2.0</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Inversión Total (€)</label>
+                                <input type="number" id="roi-inversion" value="280000" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500" oninput="runROI()">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Ingresos Brutos Anuales</label>
+                                    <input type="number" id="roi-ingresos" value="35000" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500" oninput="runROI()">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Gastos Totales (€)</label>
+                                    <input type="number" id="roi-gastos" value="9500" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500" oninput="runROI()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 rounded-3xl p-10 text-white shadow-2xl flex flex-col justify-between">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Cash Flow Estimado (Neto)</p>
+                            <h4 class="text-5xl font-black text-emerald-400" id="roi-cashflow">25.500€</h4>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mt-8">
+                            <div class="p-4 bg-slate-800 rounded-2xl">
+                                <p class="text-[10px] font-bold text-slate-500 uppercase mb-1">ROI Neta</p>
+                                <h5 class="text-xl font-bold" id="roi-porcentaje" style="color: var(--canarias-yellow);">9.1%</h5>
+                            </div>
+                            <div class="p-4 bg-slate-800 rounded-2xl">
+                                <p class="text-[10px] font-bold text-slate-500 uppercase mb-1">Payback</p>
+                                <h5 class="text-xl font-bold" id="roi-años">11.0 Años</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function switchTab(id) {
+            document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            const targetSection = document.getElementById('tab-' + id);
+            if (targetSection) targetSection.classList.add('active');
+            const navBtn = document.getElementById('nav-' + id);
+            if (navBtn) navBtn.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function runROI() {
+            const inversion = parseFloat(document.getElementById('roi-inversion').value) || 0;
+            const ingresos = parseFloat(document.getElementById('roi-ingresos').value) || 0;
+            const gastos = parseFloat(document.getElementById('roi-gastos').value) || 0;
+            const cashflow = ingresos - gastos;
+            const roi = inversion > 0 ? (cashflow / inversion) * 100 : 0;
+            const años = cashflow > 0 ? (inversion / cashflow) : 0;
+            document.getElementById('roi-cashflow').innerText = Math.round(cashflow).toLocaleString() + '€';
+            document.getElementById('roi-porcentaje').innerText = roi.toFixed(1) + '%';
+            document.getElementById('roi-años').innerText = años.toFixed(1) + ' Años';
+        }
+
+        function calcAmort() {
+            const coste = parseFloat(document.getElementById('am-coste').value) || 0;
+            const pctConst = (parseFloat(document.getElementById('am-porcentaje').value) || 0) / 100;
+            const dias = parseInt(document.getElementById('am-dias').value) || 0;
+            
+            document.getElementById('am-dias-val').innerText = dias + " Días";
+            
+            const base = coste * pctConst;
+            const resultado = (base * 0.03 / 365) * dias;
+            
+            document.getElementById('am-resultado').innerText = resultado.toLocaleString('es-ES', { 
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2 
+            }) + "€";
+        }
+
+        window.onload = () => { 
+            runROI(); 
+            calcAmort();
+        };
+    </script>
+</body>
+</html>
